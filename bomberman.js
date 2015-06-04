@@ -2,7 +2,7 @@ gameStream = new Meteor.Stream('game');
 
 if (Meteor.isClient) {
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(900, 636, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update });
 
 function preload() {
 
@@ -31,11 +31,13 @@ var glennLeft=null;
 var glennRight=null;
 var glennUp=null;
 var glennDown=null;
+var text;
+var over = false;
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.arcade.setBoundsToWorld();
-
+    over = false;
         game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(function(){gameStream.emit('Movement',  {dir:"left", name: jimmy.name, key: true})});
         game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(function(){gameStream.emit('Movement',  {dir:"right", name: jimmy.name, key: true})});
         game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function(){gameStream.emit('Movement',  {dir:"up", name: jimmy.name, key: true})});
@@ -97,22 +99,24 @@ function create() {
     tombs.physicsBodyType = Phaser.Physics.ARCADE;
 
 
-    jimmy = game.add.sprite(660, 100, 'jimmy');
+    jimmy = game.add.sprite(780, 50, 'jimmy');
     jimmy.name = "jimmy";
     jimmy.scale.set(0.14);
     game.physics.enable(jimmy, Phaser.Physics.ARCADE);
     jimmy.enableBody = true;
     jimmy.body.collideWorldBounds = true;
     jimmy.body.mass = 0.1;
+    jimmy.body.setSize(300,275,0,55);
 
-    glenn = game.add.sprite(50, 100, 'glenn');
+
+    glenn = game.add.sprite(50, 50, 'glenn');
     glenn.name = "glenn";
     glenn.scale.set(0.1);
     game.physics.enable(glenn, Phaser.Physics.ARCADE);
     glenn.enableBody = true;
     glenn.body.collideWorldBounds = true;
     glenn.body.mass = 0.1;
-
+    glenn.body.setSize(300,350,0,60);
 
     for (var j = 0; j < 5; j++)
     {
@@ -203,7 +207,24 @@ function create() {
     setbomb(data, data.type);
   })
 
+  gameStream.on('restart', function(data){
+    restart();
+  })
+
+
+
 function update(){
+
+
+  if(!jimmy.alive && !glenn.alive){
+    gameover("No one");
+  }
+  else if(!glenn.alive){
+    gameover("Jimmy");
+  }
+  else if(!jimmy.alive){
+    gameover("Glenn");
+  }
 
 
   game.physics.arcade.collide(jimmy, boxes);
@@ -220,13 +241,14 @@ function update(){
     jimmy.body.velocity.y = 0;
 
 
-    jimmy.body.setSize(300,275,0,55);
-
 glenn.body.velocity.x = 0;
     glenn.body.velocity.y = 0;
 
-
-    glenn.body.setSize(300,350,0,60);
+    if (game.input.keyboard.isDown(Phaser.Keyboard.ENTER) && over)
+    {
+        restart();
+        gameStream.emit('restart',  {})
+       }
 
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || jimmyLeft)
@@ -284,7 +306,8 @@ function setbomb(player, type){
   
       self.bomb = bombs.create(player.x, player.y+45, type);
       bomb.body.collideWorldBounds = true;
-      bomb.body.mass = 0.01;
+      bomb.body.bounce.setTo(1, 1);
+      bomb.body.mass = 0.05;
       if(type=="star"){
         self.bomb.scale.set(0.13);
       }
@@ -329,6 +352,22 @@ function die(player, fire){
       var tomb = tombs.create(player.x, player.y+40, 'tomb');
       player.kill();
     };
+
+}
+
+function gameover(winner){
+  if(text){
+   text.destroy();
+  }
+     text = game.add.text(game.world.centerX, game.world.centerY, "- Game Over -\n "+winner+" wins", { font: "65px Arial", fill: "#ff0044", align: "center" });
+    text.anchor.setTo(0.5, 0.5);
+    over = true;
+
+}
+
+function restart() {
+
+game.state.restart();
 
 }
 
