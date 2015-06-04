@@ -2,7 +2,7 @@ gameStream = new Meteor.Stream('game');
 
 if (Meteor.isClient) {
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(900, 636, Phaser.AUTO, 'phaser-example', { preload: preload, create: create, update: update });
 
 function preload() {
 
@@ -31,23 +31,25 @@ var glennLeft=null;
 var glennRight=null;
 var glennUp=null;
 var glennDown=null;
+var text;
+var over = false;
 
 function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.physics.arcade.setBoundsToWorld();
-
-        game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(function(){gameStream.emit('jimmyLeft',  {key: true})});
-        game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(function(){gameStream.emit('jimmyRight',  {key: true})});
-        game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function(){gameStream.emit('jimmyUp',  {key: true})});
-        game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onDown.add(function(){gameStream.emit('jimmyDown',  {key: true})});
-        game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onUp.add(function(){gameStream.emit('jimmyLeft',  {x: jimmy.x, y: jimmy.y, key: false})});
-        game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onUp.add(function(){gameStream.emit('jimmyRight',  {x: jimmy.x, y: jimmy.y, key: false})});
-        game.input.keyboard.addKey(Phaser.Keyboard.UP).onUp.add(function(){gameStream.emit('jimmyUp',  {x: jimmy.x, y: jimmy.y, key: false})});
-        game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onUp.add(function(){gameStream.emit('jimmyDown',  {x: jimmy.x, y: jimmy.y, key: false})});
+    over = false;
+        game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onDown.add(function(){gameStream.emit('Movement',  {dir:"left", name: jimmy.name, key: true})});
+        game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onDown.add(function(){gameStream.emit('Movement',  {dir:"right", name: jimmy.name, key: true})});
+        game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(function(){gameStream.emit('Movement',  {dir:"up", name: jimmy.name, key: true})});
+        game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onDown.add(function(){gameStream.emit('Movement',  {dir:"down", name: jimmy.name, key: true})});
+        game.input.keyboard.addKey(Phaser.Keyboard.LEFT).onUp.add(function(){gameStream.emit('Movement',  {x: jimmy.x, y: jimmy.y, dir:"left", name: jimmy.name, key: false})});
+        game.input.keyboard.addKey(Phaser.Keyboard.RIGHT).onUp.add(function(){gameStream.emit('Movement',  {x: jimmy.x, y: jimmy.y, dir:"right", name: jimmy.name, key: false})});
+        game.input.keyboard.addKey(Phaser.Keyboard.UP).onUp.add(function(){gameStream.emit('Movement',  {x: jimmy.x, y: jimmy.y, dir:"up", name: jimmy.name, key: false})});
+        game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onUp.add(function(){gameStream.emit('Movement',  {x: jimmy.x, y: jimmy.y, dir:"down", name: jimmy.name, key: false})});
       
         game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).onDown.add(function(){
         if (jimmy.alive){
-        gameStream.emit('bombSet',{x: jimmy.x, y: jimmy.y,type:"bomb"});
+        gameStream.emit('bombSet',{x: jimmy.x, y: jimmy.y, type:"bomb"});
         setbomb(jimmy, 'bomb');
           }
         });
@@ -56,14 +58,14 @@ function create() {
         // checkposition.timer.start();
 
 
-        game.input.keyboard.addKey(Phaser.Keyboard.A).onDown.add(function(){gameStream.emit('glennLeft',  {key: true})});
-        game.input.keyboard.addKey(Phaser.Keyboard.D).onDown.add(function(){gameStream.emit('glennRight',  {key: true})});
-        game.input.keyboard.addKey(Phaser.Keyboard.W).onDown.add(function(){gameStream.emit('glennUp',  {key: true})});
-        game.input.keyboard.addKey(Phaser.Keyboard.S).onDown.add(function(){gameStream.emit('glennDown',  {key: true})});
-        game.input.keyboard.addKey(Phaser.Keyboard.A).onUp.add(function(){gameStream.emit('glennLeft',  {x: glenn.x, y: glenn.y, key: false})});
-        game.input.keyboard.addKey(Phaser.Keyboard.D).onUp.add(function(){gameStream.emit('glennRight',  {x: glenn.x, y: glenn.y, key: false})});
-        game.input.keyboard.addKey(Phaser.Keyboard.W).onUp.add(function(){gameStream.emit('glennUp',  {x: glenn.x, y: glenn.y, key: false})});
-        game.input.keyboard.addKey(Phaser.Keyboard.S).onUp.add(function(){gameStream.emit('glennDown',  {x: glenn.x, y: glenn.y, key: false})});
+        game.input.keyboard.addKey(Phaser.Keyboard.A).onDown.add(function(){gameStream.emit('Movement',  {dir:"left", name: glenn.name, key: true})});
+        game.input.keyboard.addKey(Phaser.Keyboard.D).onDown.add(function(){gameStream.emit('Movement',  {dir:"right", name: glenn.name, key: true})});
+        game.input.keyboard.addKey(Phaser.Keyboard.W).onDown.add(function(){gameStream.emit('Movement',  {dir:"up", name: glenn.name, key: true})});
+        game.input.keyboard.addKey(Phaser.Keyboard.S).onDown.add(function(){gameStream.emit('Movement',  {dir:"down", name: glenn.name, key: true})});
+        game.input.keyboard.addKey(Phaser.Keyboard.A).onUp.add(function(){gameStream.emit('Movement',  {x: glenn.x, y: glenn.y, dir:"left", name: glenn.name, key: false})});
+        game.input.keyboard.addKey(Phaser.Keyboard.D).onUp.add(function(){gameStream.emit('Movement',  {x: glenn.x, y: glenn.y, dir:"right", name: glenn.name, key: false})});
+        game.input.keyboard.addKey(Phaser.Keyboard.W).onUp.add(function(){gameStream.emit('Movement',  {x: glenn.x, y: glenn.y, dir:"up", name: glenn.name, key: false})});
+        game.input.keyboard.addKey(Phaser.Keyboard.S).onUp.add(function(){gameStream.emit('Movement',  {x: glenn.x, y: glenn.y, dir:"down", name: glenn.name, key: false})});
       
         game.input.keyboard.addKey(Phaser.Keyboard.Z).onDown.add(function(){
         if (glenn.alive){
@@ -97,18 +99,24 @@ function create() {
     tombs.physicsBodyType = Phaser.Physics.ARCADE;
 
 
-    jimmy = game.add.sprite(50, 100, 'jimmy');
+    jimmy = game.add.sprite(780, 50, 'jimmy');
+    jimmy.name = "jimmy";
     jimmy.scale.set(0.14);
     game.physics.enable(jimmy, Phaser.Physics.ARCADE);
     jimmy.enableBody = true;
     jimmy.body.collideWorldBounds = true;
+    jimmy.body.mass = 0.1;
+    jimmy.body.setSize(300,275,0,55);
 
-    glenn = game.add.sprite(660, 100, 'glenn');
+
+    glenn = game.add.sprite(50, 50, 'glenn');
+    glenn.name = "glenn";
     glenn.scale.set(0.1);
     game.physics.enable(glenn, Phaser.Physics.ARCADE);
     glenn.enableBody = true;
     glenn.body.collideWorldBounds = true;
-
+    glenn.body.mass = 0.1;
+    glenn.body.setSize(300,350,0,60);
 
     for (var j = 0; j < 5; j++)
     {
@@ -121,93 +129,109 @@ function create() {
     }
 }
 
-  gameStream.on('jimmyLeft', function(data){
+  gameStream.on('Movement', function(data){
+    if (data.name == "jimmy") {
+    if (data.dir == "left") {
     jimmyLeft = data.key
-       if (data.x) {
+  }
+  else if (data.dir == "right"){
+    jimmyRight = data.key
+  }
+  else if (data.dir == "up"){
+    jimmyUp = data.key
+  }
+  else if (data.dir == "down"){
+    jimmyDown = data.key
+  };
+
+  if (!data.key) {
       jimmy.x = data.x;
       jimmy.y = data.y;
     };
-  })
 
-  gameStream.on('jimmyRight', function(data){
-   jimmyRight = data.key
-  
-    if (data.x) {
-      jimmy.x = data.x;
-      jimmy.y = data.y;
-    };
-  })
-
-  gameStream.on('jimmyDown', function(data){
-   jimmyDown = data.key
-      if (data.x) {
-      jimmy.x = data.x;
-      jimmy.y = data.y;
-    };
-  })
-
-  gameStream.on('jimmyUp', function(data){
-   jimmyUp = data.key
-      if (data.x) {
-      jimmy.x = data.x;
-      jimmy.y = data.y;
-    };
-  })
-
-  gameStream.on('glennLeft', function(data){
+  }
+  else if (data.name == "glenn") {
+    if (data.dir == "left") {
     glennLeft = data.key
-       if (data.x) {
+  }
+  else if (data.dir == "right"){
+    glennRight = data.key
+  }
+  else if (data.dir == "up"){
+    glennUp = data.key
+  }
+  else if (data.dir == "down"){
+    glennDown = data.key
+  };
+
+  if (!data.key) {
       glenn.x = data.x;
       glenn.y = data.y;
     };
+
+  }
   })
 
-  gameStream.on('glennRight', function(data){
-   glennRight = data.key
-  
-    if (data.x) {
-      glenn.x = data.x;
-      glenn.y = data.y;
+
+
+    gameStream.on('playerDie', function(data){
+      if (data.name == "jimmy" && jimmy.alive) {
+        var tomb = tombs.create(data.x, data.y+40, 'tomb');
+        jimmy.kill()
+    }
+    else if (data.name == "glenn" && glenn.alive) {
+      var tomb = tombs.create(data.x, data.y+40, 'tomb');
+      glenn.kill()
     };
   })
 
-  gameStream.on('glennDown', function(data){
-   glennDown = data.key
-      if (data.x) {
-      glenn.x = data.x;
-      glenn.y = data.y;
-    };
-  })
+  // gameStream.on('jimmyMove', function(data){
+  //   jimmy.x = data.x;
+  //   jimmy.y = data.y;
+  // })
 
-  gameStream.on('glennUp', function(data){
-   glennUp = data.key
-      if (data.x) {
-      glenn.x = data.x;
-      glenn.y = data.y;
-    };
-  })
-
-  gameStream.on('jimmyMove', function(data){
-    jimmy.x = data.x;
-    jimmy.y = data.y;
-  })
-
-  gameStream.on('glennMove', function(data){
-    glenn.x = data.x;
-    glenn.y = data.y;
-  })
+  // gameStream.on('glennMove', function(data){
+  //   glenn.x = data.x;
+  //   glenn.y = data.y;
+  // })
 
   gameStream.on('bombSet', function(data){
+    if (data.type=="star"){
+      glenn.x = data.x;
+      glenn.y = data.y;
+    }
+    else{
+      jimmy.x = data.x;
+      jimmy.y = data.y;
+    }
     setbomb(data, data.type);
   })
 
+  gameStream.on('restart', function(data){
+    restart();
+  })
+
+
+
 function update(){
+
+
+  if(!jimmy.alive && !glenn.alive){
+    gameover("No one");
+  }
+  else if(!glenn.alive){
+    gameover("Jimmy");
+  }
+  else if(!jimmy.alive){
+    gameover("Glenn");
+  }
 
 
   game.physics.arcade.collide(jimmy, boxes);
   game.physics.arcade.collide(jimmy, bombs);
   game.physics.arcade.collide(jimmy, fires, die, null, this);
   game.physics.arcade.collide(boxes, fires, killfire, null, this);
+  game.physics.arcade.collide(bombs, fires, explode, null, this);
 
   game.physics.arcade.collide(glenn, boxes);
   game.physics.arcade.collide(glenn, bombs);
@@ -217,13 +241,14 @@ function update(){
     jimmy.body.velocity.y = 0;
 
 
-    jimmy.body.setSize(300,275,0,55);
-
 glenn.body.velocity.x = 0;
     glenn.body.velocity.y = 0;
 
-
-    glenn.body.setSize(300,350,0,60);
+    if (game.input.keyboard.isDown(Phaser.Keyboard.ENTER) && over)
+    {
+        restart();
+        gameStream.emit('restart',  {})
+       }
 
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || jimmyLeft)
@@ -281,6 +306,8 @@ function setbomb(player, type){
   
       self.bomb = bombs.create(player.x, player.y+45, type);
       bomb.body.collideWorldBounds = true;
+      bomb.body.bounce.setTo(1, 1);
+      bomb.body.mass = 0.05;
       if(type=="star"){
         self.bomb.scale.set(0.13);
       }
@@ -293,18 +320,21 @@ function setbomb(player, type){
 
 
 function explode(bom){
-    var fire1 = fires.create(bom.x, bom.y, 'fire');
-    fire1.body.velocity.y = -300;
-    var fire2 = fires.create(bom.x, bom.y, 'fire');
-    fire2.body.velocity.y = 300;
-    var fire3 = fires.create(bom.x, bom.y, 'fire');
-    fire3.body.velocity.x = -300;
-    var fire4 = fires.create(bom.x, bom.y, 'fire');
-    fire4.body.velocity.x = 300;
-    fire1.scale.set(0.7);
-    fire2.scale.set(0.7);
-    fire3.scale.set(0.7);
-    fire4.scale.set(0.7);
+    if(bom.alive)
+    {
+      var fire1 = fires.create(bom.x, bom.y, 'fire');
+      fire1.body.velocity.y = -300;
+      var fire2 = fires.create(bom.x, bom.y, 'fire');
+      fire2.body.velocity.y = 300;
+      var fire3 = fires.create(bom.x, bom.y, 'fire');
+      fire3.body.velocity.x = -300;
+      var fire4 = fires.create(bom.x, bom.y, 'fire');
+      fire4.body.velocity.x = 300;
+      fire1.scale.set(0.7);
+      fire2.scale.set(0.7);
+      fire3.scale.set(0.7);
+      fire4.scale.set(0.7);
+  }
     bom.kill();
     console.log("boom!")
 
@@ -316,8 +346,29 @@ function killfire(boxes, fire){
 }
 
 function die(player, fire){
-    var tomb = tombs.create(player.x, player.y+40, 'tomb');
-    player.kill();
+  gameStream.emit('playerDie',  {x: player.x, y: player.y, name: player.name})
+
+    if (player.alive) {
+      var tomb = tombs.create(player.x, player.y+40, 'tomb');
+      player.kill();
+    };
+
+}
+
+function gameover(winner){
+  if(text){
+   text.destroy();
+  }
+     text = game.add.text(game.world.centerX, game.world.centerY, "- Game Over -\n "+winner+" wins", { font: "65px Arial", fill: "#ff0044", align: "center" });
+    text.anchor.setTo(0.5, 0.5);
+    over = true;
+
+}
+
+function restart() {
+
+game.state.restart();
+
 }
 
 
