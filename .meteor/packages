@@ -9,3 +9,5 @@ autopublish
 insecure
 digioak:meteor-phaser
 lepozepo:streams
+accounts-ui
+accounts-password
