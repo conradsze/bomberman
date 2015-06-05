@@ -1,23 +1,24 @@
-<head>
-  <title>bomberman</title>
-</head>
 
-<body>
-  {{> loginButtons}}
-
-  <h1>Welcome to Glenn vs Jimmy!</h1>
-  <div>
-
-  {{> bomberman}}
-  </div>
-  <div>
-  	<img src="https://inventwithpython.com/pygame/chapter4_files/image003.png">
-
-  	<!-- http://retrogamecrunch.com/shared/images/game-2/GAIAttack!.png -->
-  </div>
-</body>
 
 <template name="bomberman">
-	<div></div>
+  <div>
+
+  {{bomberman}}
+  </div>
+  <div style="width: 28%; z-index: 10; position: fixed; right: 20px; top: 75px; height: auto; background:white">
+  <h3>Glenn Control | Jimmy Control</h3>
+  <img src="https://inventwithpython.com/pygame/chapter4_files/image003.png">
+  <p><strong>Set bomb: &nbsp;&nbsp;&nbsp;Z &nbsp; &nbsp; &nbsp;&nbsp;| SPACEBAR&nbsp;&nbsp;&nbsp;</strong></p>
+
+  <ul>
+  <h4>Item</h4>
+    <li><img src="assets/img/shoes.jpeg"> Make you move faster</li>
+    <li><img src="assets/img/food.png"> Allow you to kick the bomb powerfully</li>
+    <li><img src="assets/img/skateboards.png">Allow you to walk through the wall</li>
+    <li><img src="assets/img/Cane.png"> Will slow down you opponent's movement </li>
+  </ul>
+
+</div>
+
 </template>
 

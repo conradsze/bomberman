@@ -11,3 +11,5 @@ digioak:meteor-phaser
 lepozepo:streams
 accounts-ui
 accounts-password
+iron:router
+twbs:bootstrap

@@ -1,0 +1,16 @@
+<template name="layout">
+<head>
+  <title>Glenn vs Jimmy</title>
+</head>
+
+<body style="background:url('assets/img/ga_image1.jpg')no-repeat; background-size:100%;">
+  	<nav style="background:grey">
+  		<strong>{{> loginButtons}}</strong>
+  		</nav>
+  <div class="text-center container">
+   {{> yield "body"}}
+
+    <!-- http://retrogamecrunch.com/shared/images/game-2/GAIAttack!.png -->
+  </div>
+</body>
+</template>
