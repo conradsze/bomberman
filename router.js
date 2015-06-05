@@ -1,13 +1,19 @@
 Router.configure({
-	layoutTemplate: 'layout'
+  layoutTemplate: 'layout'
 });
-Router.route('/', function(){
-	this.render('home', {to: "body"});
+Router.route('/', function() {
+  this.render('home', {
+    to: "body"
+  });
 });
 
-Router.route('/gameroom', function(){
-	this.render('bomberman', {to: "body"});
+Router.route('/gameroom/:_id', function() {
+  this.render('bomberman', {
+    to: "body"
+  });
 });
-Router.route('/lobby', function(){
-	this.render('lobby', {to: "body"});
+Router.route('/lobby', function() {
+  this.render('lobby', {
+    to: "body"
+  });
 });
